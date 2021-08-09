@@ -64,7 +64,7 @@ public abstract class BaseBannerAdapter<T> extends RecyclerView.Adapter<BaseView
     return mList;
   }
 
-  void setData(List<? extends T> list) {
+ public void setData(List<? extends T> list) {
     if (null != list) {
       mList.clear();
       mList.addAll(list);

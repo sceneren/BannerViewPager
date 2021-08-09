@@ -26,73 +26,76 @@ import java.util.ArrayList
  * HomeFragment RecyclerView Adapter
  */
 class ArticleAdapter(
-  val context: Context,
-  data: List<ArticleWrapper.Article>
+    val context: Context,
+    data: List<ArticleWrapper.Article>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-  private val mList = ArrayList<ArticleWrapper.Article>()
-  private val inflater: LayoutInflater
-
-  init {
-    this.mList.addAll(data)
-    this.inflater = LayoutInflater.from(context)
-  }
-
-  override fun onCreateViewHolder(
-    viewGroup: ViewGroup,
-    itemType: Int
-  ): RecyclerView.ViewHolder {
-    if (itemType == 1001) {
-      return BannerItemViewHolder(inflater.inflate(R.layout.item_home_banner, viewGroup, false))
-    }
-    return ArticleViewHolder(inflater.inflate(R.layout.item_article, viewGroup, false))
-  }
-
-  override fun onBindViewHolder(
-    holder: RecyclerView.ViewHolder,
-    i: Int
-  ) {
-    val article = mList[i]
-    if (article.type == 1001 && holder is BannerItemViewHolder) {
-      holder.bannerViewPager
-        .refreshData(article.bannerData)
-    } else if (holder is ArticleViewHolder) {
-      holder.tvAuthor.text = article.author
-      holder.tvTitle.text = article.title
-    }
-  }
-
-  fun setData(list: List<ArticleWrapper.Article>) {
-    mList.clear()
-    mList.addAll(list)
-    notifyDataSetChanged()
-  }
-
-  override fun getItemViewType(position: Int): Int {
-    return mList[position].type
-  }
-
-  override fun getItemCount(): Int {
-    return mList.size
-  }
-
-  inner class ArticleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    internal var tvTitle: TextView = itemView.findViewById(R.id.tv_title)
-    internal var tvAuthor: TextView = itemView.findViewById(R.id.tv_auther)
-  }
-
-  inner class BannerItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    var bannerViewPager: BannerViewPager<BannerData> = itemView.findViewById(R.id.banner_view3)
-    var resources: Resources = itemView.context.resources
+    private val mList = ArrayList<ArticleWrapper.Article>()
+    private val inflater: LayoutInflater
 
     init {
-      if (context is AppCompatActivity)
-        bannerViewPager.setCanLoop(false)
-          .setOrientation(ViewPager2.ORIENTATION_VERTICAL)
-          .setIndicatorGravity(IndicatorGravity.END)
-          .setInterval(2000)
-          .setAdapter(DataBindingSampleAdapter())
-          .setLifecycleRegistry(context.lifecycle)
-          .create()
+        this.mList.addAll(data)
+        this.inflater = LayoutInflater.from(context)
     }
-  }
+
+    override fun onCreateViewHolder(
+        viewGroup: ViewGroup,
+        itemType: Int
+    ): RecyclerView.ViewHolder {
+        if (itemType == 1001) {
+            return BannerItemViewHolder(
+                inflater.inflate(
+                    R.layout.item_home_banner,
+                    viewGroup,
+                    false
+                )
+            )
+        }
+        return ArticleViewHolder(inflater.inflate(R.layout.item_article, viewGroup, false))
+    }
+
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        i: Int
+    ) {
+        val article = mList[i]
+        if (article.type == 1001 && holder is BannerItemViewHolder) {
+            holder.pagerAdapter
+                .setData(article.bannerData)
+            holder.pagerAdapter.notifyDataSetChanged()
+        } else if (holder is ArticleViewHolder) {
+            holder.tvAuthor.text = article.author
+            holder.tvTitle.text = article.title
+        }
+    }
+
+    fun setData(list: List<ArticleWrapper.Article>) {
+        mList.clear()
+        mList.addAll(list)
+        notifyDataSetChanged()
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return mList[position].type
+    }
+
+    override fun getItemCount(): Int {
+        return mList.size
+    }
+
+    inner class ArticleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        internal var tvTitle: TextView = itemView.findViewById(R.id.tv_title)
+        internal var tvAuthor: TextView = itemView.findViewById(R.id.tv_auther)
+    }
+
+    inner class BannerItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var bannerViewPager: ViewPager2 = itemView.findViewById(R.id.banner_view3)
+        var resources: Resources = itemView.context.resources
+        var pagerAdapter: DataBindingSampleAdapter = DataBindingSampleAdapter()
+
+        init {
+            bannerViewPager.apply {
+                adapter = pagerAdapter
+            }
+        }
+    }
 }

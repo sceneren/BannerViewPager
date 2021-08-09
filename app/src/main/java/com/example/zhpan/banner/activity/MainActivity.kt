@@ -12,7 +12,7 @@ import com.example.zhpan.banner.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding:ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -22,25 +22,25 @@ class MainActivity : AppCompatActivity() {
         setListener()
     }
 
-  private fun initView() {
-      binding.toolbar.apply {
-      title = getString(R.string.app_name)
-      setSupportActionBar(binding.toolbar)
+    private fun initView() {
+        binding.toolbar.apply {
+            title = getString(R.string.app_name)
+            setSupportActionBar(binding.toolbar)
+        }
+        binding.drawerLayout.apply {
+            val toggle = ActionBarDrawerToggle(
+                this@MainActivity,
+                this,
+                binding.toolbar, R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close
+            )
+            addDrawerListener(toggle)
+            toggle.syncState()
+        }
+        binding.navView.apply {
+            setNavigationItemSelectedListener(onDrawerNavigationItemSelectedListener)
+        }
     }
-      binding.drawerLayout.apply {
-      val toggle = ActionBarDrawerToggle(
-          this@MainActivity,
-          this,
-          binding.toolbar, R.string.navigation_drawer_open,
-          R.string.navigation_drawer_close
-      )
-      addDrawerListener(toggle)
-      toggle.syncState()
-    }
-    binding.navView.apply {
-      setNavigationItemSelectedListener(onDrawerNavigationItemSelectedListener)
-    }
-  }
 
     private fun initData() {
         with(binding.vpFragment) {
@@ -51,6 +51,7 @@ class MainActivity : AppCompatActivity() {
                     binding.rgTab.check(getCheckedId(position))
                 }
             })
+            isUserInputEnabled = false
         }
     }
 
@@ -67,13 +68,22 @@ class MainActivity : AppCompatActivity() {
     private fun setListener() {
         binding.rgTab.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
-                R.id.rb_home -> binding.vpFragment.setCurrentItem(AdapterFragmentPager.PAGE_HOME, true)
-                R.id.rb_add -> binding.vpFragment.setCurrentItem(AdapterFragmentPager.PAGE_FIND, true)
+                R.id.rb_home -> binding.vpFragment.setCurrentItem(
+                    AdapterFragmentPager.PAGE_HOME,
+                    true
+                )
+                R.id.rb_add -> binding.vpFragment.setCurrentItem(
+                    AdapterFragmentPager.PAGE_FIND,
+                    true
+                )
                 R.id.rb_find -> binding.vpFragment.setCurrentItem(
                     AdapterFragmentPager.PAGE_INDICATOR,
                     true
                 )
-                R.id.rb_others -> binding.vpFragment.setCurrentItem(AdapterFragmentPager.PAGE_OTHERS, true)
+                R.id.rb_others -> binding.vpFragment.setCurrentItem(
+                    AdapterFragmentPager.PAGE_OTHERS,
+                    true
+                )
             }
         }
     }
